@@ -38,4 +38,9 @@ CONFIGURATION
  * Enable the "Wysiwyg embed" button in each wysiwyg profile 
    that will have widgets 
 
+HOOK API
+--------
+ * hook_wysiwyg_widget_embed_alter(&$placeholders)
+   Allows custom placeholders to be used for various widgets.
+   see wysiwyg_widget.api.php for details.
 
