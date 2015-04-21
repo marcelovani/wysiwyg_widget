@@ -1,7 +1,10 @@
 INTRODUCTION
 ------------
 
-The Wysiwyg Widget allows javacript & html to be placed in a controlled way into the wysiwyg editor. NB it can allow ANY html tag to be used by configuring its filter to run after filters that clean html such as "Limit allowed HTML tags".
+The Wysiwyg Widget allows javacript & html to be placed 
+in a controlled way into the wysiwyg editor. 
+NB it can allow ANY html tag to be used by configuring its filter 
+to run after filters that clean html such as "Limit allowed HTML tags".
 
  * For a full description of the module, visit the project page:
    https://drupal.org/project/wysiwyg_widget
@@ -18,15 +21,21 @@ This module requires the following modules:
 
 INSTALLATION
 ------------
- * Install as you would normally install a contributed Drupal module. See:
+ * Install as you would normally install a contributed Drupal module. 
+   See:
    https://drupal.org/documentation/install/modules-themes/modules-7
    for further information.
 
 
 CONFIGURATION
 -------------
- * Enable the filter and set its order to be last or at least after filters that clean html, such as "Limit allowed HTML tags" for each format widgets are to be used on (/admin/config/content/formats).
+ * Enable the filter and set its order to be last 
+   or at least after filters that clean html, 
+   such as "Limit allowed HTML tags" 
+   for each format widgets are to be used on 
+   (/admin/config/content/formats).
 
- * Enable the "Wysiwyg embed" button in each wysiwyg profile that will have widgets 
+ * Enable the "Wysiwyg embed" button in each wysiwyg profile 
+   that will have widgets 
 
 
