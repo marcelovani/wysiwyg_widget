@@ -1,1 +1,5 @@
 name = Wysiwyg Widget
+description = Paste widget embed code into the editor
+package = User interface
+core = 7.x
+dependencies[] = wysiwyg
