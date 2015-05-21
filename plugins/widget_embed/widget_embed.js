@@ -39,7 +39,7 @@
     /**
      * Replace all <!--widget_embed: ... --> tags with images.
      */
-    attach: function(content, settings) { 
+    attach: function(content, settings) {
 
       // Individually replace each widget so they have a chance to be identified.
       var dom = document.createElement('div');
@@ -47,9 +47,11 @@
       var comments = this.getComments(dom, []);
       if (comments.length > 0) {
         for (var i = 0; i < comments.length; i++) {
-          var comment = comments[i]; 
+          var comment = comments[i];
           if (comment.nodeValue.indexOf('widget_embed:') === 0) {
             var data_value = comment.nodeValue.replace('widget_embed:', '');
+            // Escaping special symbols.
+            var escaped_comment_nodeValue = this.escapeRegExp(comment.nodeValue);
             if (settings.placeholders !== undefined) {
               var reg;
               // Replace with provided placeholders if possible
@@ -58,16 +60,16 @@
                 var flags = settings.placeholders[placeholder].regex.flags ? settings.placeholders[placeholder].regex.flags : '';
                 reg = new RegExp(settings.placeholders[placeholder].regex.pattern, flags);
                 if ((reg.test(comment.nodeValue))) {
-                  reg = new RegExp('<!--' + comment.nodeValue + '-->', 'gi');
+                  reg = new RegExp('<!--' + escaped_comment_nodeValue + '-->', 'gi');
                   content = content.replace(
-                    reg, 
+                    reg,
                     settings.placeholders[placeholder].icon_markup.replace('img ', 'img data-widget="' + data_value + '"')
                   );
                 }
               }
             }
             // Use the generic placeholder for any that were not found.
-            var regex = new RegExp('<!--' + comment.nodeValue + '-->', 'gi');
+            var regex = new RegExp('<!--' + escaped_comment_nodeValue + '-->', 'gi');
             content = content.replace(
               regex, 
               settings.icon_markup.replace('img ', 'img data-widget="' + data_value + '"')
@@ -159,6 +161,13 @@
 
         jQuery('#edit-widget-embed-body').focus();
       });
+    },
+
+    /**
+     * Escapes special characters in regexp.
+     */
+    escapeRegExp: function(str) {
+      return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
     },
 
   };
