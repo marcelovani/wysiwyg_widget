@@ -124,7 +124,7 @@
         jQuery('#edit-widget-embed-insert').click(function() {
           var body = jQuery('#edit-widget-embed-body').val();
           if (body.length) {
-            var content;
+            var content = '';
 
             if (settings.placeholders !== undefined) {
               var reg;
