@@ -8,7 +8,7 @@
     isNode: function(node) {
         return $(node).is('.wysiwyg-widget-embed-img');
     },
-      
+
     /**
      * Find the comment nodes.
      */
@@ -120,9 +120,10 @@
         jQuery('#edit-widget-embed-cancel').click(function() {
           jQuery('.widget-embed-popup').remove();
         });
-  
+
         jQuery('#edit-widget-embed-insert').click(function() {
           var body = jQuery('#edit-widget-embed-body').val();
+
           if (body.length) {
             var content = '';
 
@@ -140,13 +141,26 @@
             }
 
             if (content === '') {
-              // Use default place holder.
-              content = settings.icon_markup.replace('img ', 'img data-widget="' + window.escape(body) + '"');
+              // Allow unknown widgets if placeholders_only is set to false.
+              if (settings.placeholders_only === false) {
+                  // Use default place holder.
+                  content = settings.icon_markup.replace('img ', 'img data-widget="' + window.escape(body) + '"');
+              } else {
+                // Not allowed to use this widget, so list what they can use.
+                var permitted = 'Only the following widgets can be used:\n';
+
+                for (var placeholder in settings.placeholders) {
+                  permitted = permitted + "\n" + placeholder;
+                }
+                jQuery('#edit-widget-embed-body').val(permitted);
+                return;
+              }
             }
+
             // Insert content.
             Drupal.wysiwyg.instances[instanceId].insert(content);
           }
-  
+
           // Close popup.
           jQuery('.widget-embed-popup').remove();
         });
@@ -189,3 +203,4 @@ if (!jQuery.fn.center) {
     return this;
   };
 }
+

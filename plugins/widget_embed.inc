@@ -32,6 +32,10 @@ function wysiwyg_widget_widget_embed_plugin() {
         '/plugins/widget_embed/images/widget.png' . '" />',
 
       'placeholders' => array(),
+      // By default let ANY code be put into a widget.
+      // To restrict to predifined widgets, set this to true
+      // and create widget placeholders for allowed widgets in hook_wysiwyg_widget_embed_alter().
+      'placeholders_only' => variable_get('wysiwyg_widget_widget_embed_placeholders_only', FALSE),
     ),
   );
 
@@ -40,3 +44,4 @@ function wysiwyg_widget_widget_embed_plugin() {
 
   return $plugins;
 }
+
