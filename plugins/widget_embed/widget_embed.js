@@ -90,8 +90,8 @@
     detach: function(content) {
       var jo = jQuery('<div>' + content + '</div>');
       jo.find('img').each(function() {
-        if (jQuery( this ).data('widget')) { 
-          jQuery( this ).replaceWith( '<!--widget_embed:' + jQuery( this ).data('widget') + '-->' );
+        if ( jQuery( this ).data( 'widget' ) ) {
+          jQuery( this ).replaceWith( '<!--widget_embed:' + jQuery( this ).data( 'widget' ) + '-->' );
         }
       });
       return jo.html();
