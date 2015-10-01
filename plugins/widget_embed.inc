@@ -1,7 +1,11 @@
 <?php
+/**
+ * @file
+ * Provides a wysiwyg plugin.
+ */
 
 /**
- * Specially named implementation of hook_wysiwyg_plugin().
+ * Specially named Implements hook_wysiwyg_plugin().
  *
  * Should be named {$module}_{$plugin}_plugin().
  */
@@ -10,7 +14,7 @@ function wysiwyg_widget_widget_embed_plugin() {
     'title' => t('Widget embed'),
     'icon file' => 'widget_embed.png',
     'icon title' => t('Embed a widget'),
-    // CSS doesn't load /grrrrrr/
+    // CSS doesn't load /grrrrrr/.
     'css path' => drupal_get_path('module', 'wysiwyg_widget'),
     'css file' => '/plugins/widget_embed/widget_embed.css',
 
@@ -27,21 +31,20 @@ function wysiwyg_widget_widget_embed_plugin() {
 <input id="edit-widget-embed-cancel" class="button-no form-submit" type="submit" value="Cancel" name="op" onclick="return (false);"></input>
 </form>
 </div>',
-      'icon_markup' => '<img class="wysiwyg-widget-embed-img" title="Widget embed" ' .
-        'src="' . drupal_get_path('module', 'wysiwyg_widget') .
-        '/plugins/widget_embed/images/widget.png' . '" />',
+    'icon_markup' => '<img class="wysiwyg-widget-embed-img" title="Widget embed" ' .
+      'src="' . drupal_get_path('module', 'wysiwyg_widget') .
+      '/plugins/widget_embed/images/widget.png' . '" />',
 
-      'placeholders' => array(),
-      // By default let ANY code be put into a widget.
-      // To restrict to predifined widgets, set this to true
-      // and create widget placeholders for allowed widgets in hook_wysiwyg_widget_embed_alter().
-      'placeholders_only' => variable_get('wysiwyg_widget_widget_embed_placeholders_only', FALSE),
-    ),
+    'placeholders' => array(),
+    // By default let ANY code be put into a widget.
+    // To restrict to predifined widgets, set this to true
+    // and create widget placeholders for allowed widgets in hook_wysiwyg_widget_embed_alter().
+    'placeholders_only' => variable_get('wysiwyg_widget_widget_embed_placeholders_only', FALSE),
+  ),
   );
 
-  // Allow module to set placeholders for widgets
+  // Allow module to set placeholders for widgets.
   drupal_alter('wysiwyg_widget_embed', $plugins['widget_embed']['settings']['placeholders']);
 
   return $plugins;
 }
-
