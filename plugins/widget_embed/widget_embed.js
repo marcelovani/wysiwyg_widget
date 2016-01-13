@@ -5,14 +5,14 @@
     /**
      * Return whether the passed node belongs to this plugin.
      */
-    isNode: function(node) {
-        return $(node).is('.wysiwyg-widget-embed-img');
+    isNode: function (node) {
+      return $(node).is('.wysiwyg-widget-embed-img');
     },
 
     /**
      * Find the comment nodes.
      */
-    getComments: function(node, comments) {
+    getComments: function (node, comments) {
       node = node.firstChild;
       while (node) {
         if (node.nodeType === 8) {
@@ -27,7 +27,7 @@
     /**
      * Execute the button.
      */
-    invoke: function(data, settings, instanceId) {
+    invoke: function (data, settings, instanceId) {
       if (data.content !== '') {
         // Pass the data from the img tag to the popup
         settings.data = jQuery(data.content).data('widget');
@@ -39,7 +39,7 @@
     /**
      * Replace all <!--widget_embed: ... --> tags with images.
      */
-    attach: function(content, settings) {
+    attach: function (content, settings) {
 
       // Individually replace each widget so they have a chance to be identified.
       var dom = document.createElement('div');
@@ -71,7 +71,7 @@
             // Use the generic placeholder for any that were not found.
             var regex = new RegExp('<!--' + escaped_comment_nodeValue + '-->', 'gi');
             content = content.replace(
-              regex, 
+              regex,
               settings.icon_markup.replace('img ', 'img data-widget="' + data_value + '"')
             );
           }
@@ -87,11 +87,11 @@
     /**
      * Replace images with <!--widget_embed ... -->.
      */
-    detach: function(content) {
+    detach: function (content) {
       var jo = jQuery('<div>' + content + '</div>');
-      jo.find('img').each(function() {
-        if ( jQuery( this ).data( 'widget' ) ) {
-          jQuery( this ).replaceWith( '<!--widget_embed:' + jQuery( this ).data( 'widget' ) + '-->' );
+      jo.find('img').each(function () {
+        if (jQuery(this).data('widget')) {
+          jQuery(this).replaceWith('<!--widget_embed:' + jQuery(this).data('widget') + '-->');
         }
       });
       return jo.html();
@@ -100,15 +100,15 @@
     /**
      * Shows the popup.
      */
-    show_popup: function(settings, instanceId) {
+    show_popup: function (settings, instanceId) {
       // Check if the form is not yet on the DOM.
       if (jQuery('.widget-embed-popup').length === 0) {
         // Print the form on the page.
         jQuery('body').append(settings.form_markup);
       }
       // Display popup centered on screen.
-      jQuery('.widget-embed-popup').center().show('fast', 'linear', function() {
-        
+      jQuery('.widget-embed-popup').center().show('fast', 'linear', function () {
+
         if (settings.data !== undefined) {
           jQuery('#edit-widget-embed-body').val(window.unescape(settings.data));
           jQuery('#edit-widget-embed-insert').val('Update');
@@ -117,11 +117,11 @@
         }
 
         // Listeners for buttons.
-        jQuery('#edit-widget-embed-cancel').click(function() {
+        jQuery('#edit-widget-embed-cancel').click(function () {
           jQuery('.widget-embed-popup').remove();
         });
 
-        jQuery('#edit-widget-embed-insert').click(function() {
+        jQuery('#edit-widget-embed-insert').click(function () {
           var body = jQuery('#edit-widget-embed-body').val();
 
           if (body.length) {
@@ -143,8 +143,8 @@
             if (content === '') {
               // Allow unknown widgets if placeholders_only is set to false.
               if (settings.placeholders_only === false) {
-                  // Use default place holder.
-                  content = settings.icon_markup.replace('img ', 'img data-widget="' + window.escape(body) + '"');
+                // Use default place holder.
+                content = settings.icon_markup.replace('img ', 'img data-widget="' + window.escape(body) + '"');
               } else {
                 // Not allowed to use this widget, so list what they can use.
                 var permitted = 'Only the following widgets can be used:\n';
@@ -166,7 +166,7 @@
         });
 
         // Catch keyboard events.
-        jQuery(document).keydown(function(e) {
+        jQuery(document).keydown(function (e) {
           // Esc key pressed.
           if (e.keyCode === 27) {
             jQuery('.widget-embed-popup').remove();
@@ -180,7 +180,7 @@
     /**
      * Escapes special characters in regexp.
      */
-    escapeRegExp: function(str) {
+    escapeRegExp: function (str) {
       return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
     },
 
@@ -194,12 +194,12 @@
 if (!jQuery.fn.center) {
   jQuery.fn.center = function () {
     this.css('position', 'absolute');
-  this.css('top', Math.max(0, ((jQuery(window).height() -
-    jQuery(this).outerHeight()) / 2) +
-    jQuery(window).scrollTop()) + 'px');
-  this.css('left', Math.max(0, ((jQuery(window).width() -
-    jQuery(this).outerWidth()) / 2) +
-    jQuery(window).scrollLeft()) + 'px');
+    this.css('top', Math.max(0, ((jQuery(window).height() -
+        jQuery(this).outerHeight()) / 2) +
+        jQuery(window).scrollTop()) + 'px');
+    this.css('left', Math.max(0, ((jQuery(window).width() -
+        jQuery(this).outerWidth()) / 2) +
+        jQuery(window).scrollLeft()) + 'px');
     return this;
   };
 }
