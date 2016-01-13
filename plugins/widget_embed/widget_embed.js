@@ -101,6 +101,7 @@
      * Shows the popup.
      */
     show_popup: function (settings, instanceId) {
+      var wrapperClass = 'wysiwyg-widget-wrapper';
       // Check if the form is not yet on the DOM.
       if (jQuery('.widget-embed-popup').length === 0) {
         // Print the form on the page.
@@ -110,7 +111,15 @@
       jQuery('.widget-embed-popup').center().show('fast', 'linear', function () {
 
         if (settings.data !== undefined) {
-          jQuery('#edit-widget-embed-body').val(window.unescape(settings.data));
+          var widgetBody = window.unescape(settings.data);
+
+          // As we add the wrapper on popup submit - there is no reason to show
+          // it in the popup. Delete it - and it will be added again on submit.
+          if (jQuery(widgetBody).filter('.' + wrapperClass)) {
+            widgetBody = jQuery(widgetBody).unwrap().html();
+          }
+
+          jQuery('#edit-widget-embed-body').val(widgetBody);
           jQuery('#edit-widget-embed-insert').val('Update');
           // Clear the data now that it's been used.
           delete settings.data;
@@ -135,6 +144,10 @@
                 var flags = settings.placeholders[placeholder].regex.flags ? settings.placeholders[placeholder].regex.flags : '';
                 reg = new RegExp(settings.placeholders[placeholder].regex.pattern, flags);
                 if ((reg.test(body))) {
+                  // Add the wrapper.
+                  if (body.indexOf(wrapperClass) === -1) {
+                    body = '<div class="' + wrapperClass + '">' + body + '</div>';
+                  }
                   content = settings.placeholders[placeholder].icon_markup.replace('img ', 'img data-widget="' + window.escape(body) + '"');
                 }
               }
@@ -203,4 +216,3 @@ if (!jQuery.fn.center) {
     return this;
   };
 }
-
