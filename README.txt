@@ -36,7 +36,14 @@ CONFIGURATION
    (/admin/config/content/formats).
 
  * Enable the "Wysiwyg embed" button in each wysiwyg profile 
-   that will have widgets 
+   that will have widgets.
+
+ * It is possible to send the X-XSS-Protection header in order
+   to solve an issue with Chrome being hypersensitive towards tags
+   included in the WYSIWYG editor using the widget ("err_blocked_by_xss_auditor"
+   error). To do that, visit admin/config/content/wysiwyg_widget and
+   check the "Send X-XSS-Protection header" checkbox to disable XSS filtering
+   on every page where the wysiwyg_widget plugin is present.
 
 HOOK API
 --------

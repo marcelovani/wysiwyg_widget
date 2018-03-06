@@ -40,3 +40,50 @@ function _wysiwyg_widget_embed_filter($text, $filter, $format, $langcode, $cache
     $text
   );
 }
+
+/**
+ * Implements hook_menu().
+ */
+function wysiwyg_widget_menu() {
+  $items = array();
+
+  $items['admin/config/content/wysiwyg_widget'] = array(
+    'title' => t('Wysiwyg Widget settings'),
+    'description' => t('Configure settings for Wysiwyg Widget.'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('wysiwyg_widget_settings'),
+    'access arguments' => array('administer site configuration'),
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  return $items;
+}
+
+/**
+ * Page callback for Wysiwyg Widget settings form.
+ */
+function wysiwyg_widget_settings($form, &$form_state) {
+  $form = array();
+  $form['wysiwyg_widget_xss_header'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Send X-XSS-Protection header'),
+    '#default_value' => variable_get('wysiwyg_widget_xss_header', 0),
+    '#description' => t('When checked, the X-XSS-Protection header will be sent to prevent the "err_blocked_by_xss_auditor" error on Chrome.'),
+  );
+
+  return system_settings_form($form);
+}
+
+/**
+ * Implements hook_wysiwyg_editor_settings_alter().
+ *
+ * Send X-XSS-Protection header to avoid the "err_blocked_by_xss_auditor"
+ * error on Chrome.
+ */
+function wysiwyg_widget_wysiwyg_editor_settings_alter(&$settings, $context) {
+  $set_XSS_header = variable_get('wysiwyg_widget_xss_header', 0);
+  // Only send the header when the widget_embed plugin is present.
+  if ($set_XSS_header == 1 && strpos($settings['plugins'], 'widget_embed') !== FALSE) {
+    drupal_add_http_header('X-XSS-Protection', '0');
+  }
+}
