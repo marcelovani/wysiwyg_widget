@@ -87,3 +87,96 @@ function wysiwyg_widget_wysiwyg_editor_settings_alter(&$settings, $context) {
     drupal_add_http_header('X-XSS-Protection', '0');
   }
 }
+
+/**
+ * Implementation of hook_ctools_plugin_api().
+ *
+ * Tell CTools that we support the default_mymodule_presets API.
+ */
+function wysiwyg_widget_ctools_plugin_api($owner, $api) {
+  var_dump($owner);
+  var_dump($api);
+  if ($owner == 'wysiwyg_widget' && $api == 'default_wysiwyg_widget') {
+    return array('version' => 1);
+  }
+}
+
+/**
+ * Implements hook_ctools_plugin_directory().
+ *
+ * Telling CTools that we want to define an 'export_ui' plugin.
+ */
+function wysiwyg_widget_ctools_plugin_directory($module, $type) {
+  var_dump($module);
+  // Load the export_ui plugin.
+  if ($type == 'export_ui') {
+    return 'plugins/export_ui';
+  }
+}
+
+/**
+ * Load function.
+ *
+ * @param string $machinename
+ *
+ * @return object
+ */
+function wysiwyg_widget_load($machinename) {
+
+  ctools_include('export');
+
+  $sets = &drupal_static(__FUNCTION__, array());
+
+  if (!isset($sets[$machinename])) {
+    // Load the set.
+    $result = ctools_export_load_object('wysiwyg_widgets', 'names', array($machinename));
+    if (isset($result[$machinename])) {
+      $set = $result[$machinename];
+    }
+    else {
+      return NULL;
+    }
+
+    // Store the original set. This is used by the set edit form.
+    $set->raw = clone $set;
+
+    // Allow modules to alter the raw set object.
+    drupal_alter('wysiwyg_widget_load', $set);
+
+    // Configure this set based on the defined settings.
+    $set->wrapper_id = 'wysiwyg-widget-' . $set->machinename . '-wrapper';
+    $set->placeholder_id = 'wysiwyg-widget-' . $set->machinename;
+
+    // Allow modules to alter the fully-loaded set object.
+    drupal_alter('wysiwyg_widget', $set);
+
+    // Statically cache the fully loaded set.
+    $sets[$machinename] = $set;
+  }
+  else {
+    // Use the statically cached set object.
+    $set = $sets[$machinename];
+  }
+
+  return $set;
+}
+
+/**
+ * Load all widgets.
+ *
+ * @param boolean $include_disabled
+ *
+ * @return array of sets.
+ */
+function wysiwyg_widgets_load_all($include_disabled = FALSE) {
+  ctools_include('export');
+
+  $sets = ctools_export_crud_load_all('wysiwyg_widgets');
+  foreach ($sets as $key => $set) {
+    if (!$include_disabled && isset($set->disabled) && $set->disabled) {
+      unset($sets[$key]);
+    }
+  }
+
+  return $sets;
+}

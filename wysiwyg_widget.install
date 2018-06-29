@@ -1,0 +1,80 @@
+<?php
+
+/**
+ * @file
+ * Install hooks for Wysiwyg Widget project.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function wysiwyg_widget_schema() {
+  $schema['wysiwyg_widget'] = array(
+    'description' => 'Stores Wysiwyg Widget.',
+    'export' => array(
+      'key' => 'machinename',
+      'primary key' => 'swid',
+      'identifier' => 'wysiwyg_widget', // Exports will be available as $wysiwyg_widget
+      'default hook' => 'default_wysiwyg_widget', // Function hook name.
+      'api' => array(
+        'owner' => 'wysiwyg_widget',
+        'api' => 'default_wysiwyg_widget', // Base name for api include files.
+        'minimum_version' => 1,
+        'current_version' => 1,
+      ),
+      'load callback' => 'wysiwyg_widget_load',
+    ),
+    'fields' => array(
+      'swid' => array(
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'Primary ID field for the table. Not used for anything except internal lookups.',
+        'no export' => TRUE, // Do not export database-only keys.
+      ),
+      'name' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+        'description' => "The unique name.",
+      ),
+      'machinename' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+        'description' => "The machine readable name.",
+      ),
+      'widget' => array(
+        'type' => 'blob',
+        'size' => 'big',
+        'serialize' => TRUE,
+        'description' => "The widget.",
+      ),
+    ),
+    'primary key' => array('swid'),
+    'unique keys' => array(
+      'machinename' => array('machinename'),
+    ),
+  );
+
+  return $schema;
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function wysiwyg_widget_uninstall() {
+  drupal_uninstall_schema('wysiwyg_widget');
+  variable_del('wysiwyg_widget_xss_header');
+}
+
+/**
+ * Create wysiwyg_widget table.
+ */
+function wysiwyg_widget_update_7001() {
+  if (db_table_exists('wysiwyg_widget') == FALSE) {
+    drupal_install_schema('wysiwyg_widget');
+  }
+}

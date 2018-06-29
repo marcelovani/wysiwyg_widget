@@ -4,4 +4,6 @@ package = User interface
 core = 7.x
 configure = admin/config/content/wysiwyg_widget
 files[] = tests/wysiwyg_widget.test
+files[] = plugins/export_ui/wysiwyg_widget_ctools_export_ui.inc
+files[] = plugins/export_ui/wysiwyg_widget_ui.class.php
 dependencies[] = wysiwyg
