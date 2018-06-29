@@ -1,0 +1,76 @@
+<?php
+
+/**
+ * Wysiwyg Widget tests.
+ *
+ * @group wysiwyg_widget
+ */
+class WysiwygWidgetTest extends DrupalWebTestCase {
+  protected $profile = 'standard';
+
+  /**
+   * Modules to enable.
+   *
+   * @var array
+   */
+  public $modules = array(
+    'wysiwyg',
+    'node',
+    'field',
+    'text',
+    'wysiwyg_widget'
+  );
+
+  /**
+   * A user with the 'Administer Wysiwyg Widget' permission.
+   *
+   * @var object
+   */
+  protected $adminUser;
+
+  /**
+   * Info.
+   *
+   * @return array
+   *   The test info
+   */
+  public static function getInfo() {
+    return array(
+      'name' => 'Wysiwyg Widget',
+      'description' => 'Test Wysiwyg Widget admin UI.',
+      'group' => 'Wysiwyg Widget',
+    );
+  }
+
+  /**
+   * Setup.
+   */
+  public function setUp() {
+    parent::setUp($this->modules);
+
+    // Create admin user.
+    $this->adminUser = $this->drupalCreateUser(array(
+      'access administration pages',
+      'administer site configuration',
+      'administer modules',
+    ));
+  }
+
+  function testLinkToConfig() {
+    $this->drupalLogin($this->adminUser);
+    $this->drupalGet('admin/modules');
+    $link = $this->xpath('//a[contains(@href, :href) and contains(@id, :id)]', [
+      ':href' => 'admin/config/content/wysiwyg_widget',
+      ':id' => 'edit-modules-user-interface-wysiwyg-widget-links-configure'
+    ]);
+    $this->assertTrue(count($link) === 1, 'Link to config is present');
+  }
+
+  /**
+   * Admin UI.
+   */
+  function testAdminUI() {
+    $this->drupalLogin($this->adminUser);
+    $this->drupalGet('admin/config/content/wysiwyg_widget');
+  }
+}

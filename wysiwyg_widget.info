@@ -3,4 +3,5 @@ description = Paste widget embed code into the editor
 package = User interface
 core = 7.x
 configure = admin/config/content/wysiwyg_widget
+files[] = tests/wysiwyg_widget.test
 dependencies[] = wysiwyg
