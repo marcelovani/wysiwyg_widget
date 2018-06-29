@@ -9,7 +9,6 @@ $plugin = array(
   'access' => 'administer site configuration', // Define a permission users must have to access these pages.
   // Define the menu item.
   'menu' => array(
-    'menu prefix' => 'admin/structure',
     'menu item' => 'wysiwyg_widget',
     'menu title' => 'Wysiwyg Widget',
     'menu description' => 'Administer Wysiwyg Widgets.',

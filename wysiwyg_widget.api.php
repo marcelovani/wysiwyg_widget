@@ -29,3 +29,7 @@ function hook_wysiwyg_widget_embed_alter(&$placeholders) {
   );
 
 }
+
+// default_wysiwyg_widget()
+
+//@todo list other hooks here
