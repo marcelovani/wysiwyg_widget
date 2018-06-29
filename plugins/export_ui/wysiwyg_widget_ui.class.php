@@ -37,7 +37,6 @@ class wysiwyg_widget_ui extends ctools_export_ui {
     $this->rows[$name]['data'] = array();
     $this->rows[$name]['class'] = !empty($item->disabled) ? array('ctools-export-ui-disabled') : array('ctools-export-ui-enabled');
     $this->rows[$name]['data'][] = array('data' => check_plain($item->name), 'class' => array('ctools-export-ui-name'));
-    $this->rows[$name]['data'][] = array('data' => (check_plain($item->block) ? t('Yes') : t('No')), 'class' => array('ctools-export-ui-block'));
     $this->rows[$name]['data'][] = array('data' => check_plain($item->{$schema['export']['export type string']}), 'class' => array('ctools-export-ui-storage'));
 
     $ops = theme('links__ctools_dropbutton', array('links' => $operations, 'attributes' => array('class' => array('links', 'inline'))));
@@ -54,8 +53,7 @@ class wysiwyg_widget_ui extends ctools_export_ui {
   function list_table_header() {
     $header = array();
 
-    $header[] = array('data' => t('Button set'), 'class' => array('ctools-export-ui-name'));
-    $header[] = array('data' => t('Block'), 'class' => array('ctools-export-ui-block'));
+    $header[] = array('data' => t('Widget'), 'class' => array('ctools-export-ui-name'));
     $header[] = array('data' => t('Storage'), 'class' => array('ctools-export-ui-storage'));
     $header[] = array('data' => t('Operations'), 'class' => array('ctools-export-ui-operations'));
 

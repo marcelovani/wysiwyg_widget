@@ -9,7 +9,7 @@ $plugin = array(
   'access' => 'administer site configuration', // Define a permission users must have to access these pages.
   // Define the menu item.
   'menu' => array(
-    'menu prefix' => 'admin/structure', //@todo change this
+    'menu prefix' => 'admin/structure',
     'menu item' => 'wysiwyg_widget',
     'menu title' => 'Wysiwyg Widget',
     'menu description' => 'Administer Wysiwyg Widgets.',
@@ -33,90 +33,44 @@ $plugin = array(
 /**
  * Define the preset add/edit form.
  */
-function wysiwyg_widget_ctools_export_ui_form(&$form, &$form_state) { die('aaa');
+function wysiwyg_widget_ctools_export_ui_form(&$form, &$form_state) {
   $item = ($form_state['op'] == 'add' ? $form_state['item'] : $form_state['item']->raw);
 
-  // Generate the list of available services.
-  $services = wysiwyg_widget_get_services();
-
-  $form['settings'] = array(
-    '#type' => 'vertical_tabs',
-  );
-
-  $form['general'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('General settings'),
-    '#collapsible' => TRUE,
-    '#collapsed' => FALSE,
-    '#group' => 'settings',
-  );
-
-  $form['available_services'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('Services'),
-    '#collapsible' => TRUE,
-    '#collapsed' => FALSE,
-    '#group' => 'settings',
-  );
-
-  $form['custom_markup'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('Custom Markup'),
-    '#collapsible' => TRUE,
-    '#collapsed' => FALSE,
-    '#group' => 'settings',
-    '#description' => '<strong>' . t('In order to edit the markup, you need to enable the services in the "Services tab".') . '</strong>',
-  );
+  // Generate the list of available widgets.
+  module_load_include('inc', 'wysiwyg_widget', 'plugins/widget_embed');
+  $widgets = wysiwyg_widget_widget_embed_plugin();
 
   // Use our dragable table theme function.
-  $form['available_services']['services'] = array(
-    '#theme' => 'wysiwyg_widget_manage_services',
+  $form['available_widgets']['widgets'] = array(
+    '#theme' => 'wysiwyg_widget_manage_widgets',
     '#tree' => TRUE,
   );
 
-  foreach ($services as $service_name) {
+  foreach ($widgets as $widget_name => $value) {
 
-    $form['available_services']['services'][$service_name]['service'] = array(
-      '#markup' => $service_name,
-    );
-
-    $form['available_services']['services'][$service_name]['enabled'] = array(
-      '#type' => 'checkbox',
-      '#default_value' => isset($item->services[$service_name]['enabled'])
-        ? $item->services[$service_name]['enabled']
-        : 0,
+    $form['available_widgets']['widgets'][$widget_name]['name'] = array(
+      '#markup' => $widget_name,
     );
 
     // Store the buttons markup along other data.
-    $form['available_services']['services'][$service_name]['markup'] = array(
-      '#type' => 'hidden',
-      '#value' => wysiwyg_widget_get_service_content($service_name, $item->machinename),
-    );
-
-    // The field contains sort info (weights).
-    $form['available_services']['services'][$service_name]['weight'] = array(
-      '#type' => 'weight',
-      '#title' => t('Weight'),
-      '#title_display' => 'invisible',
-      '#default_value' => isset($item->services[$service_name]['weight'])
-        ? $item->services[$service_name]['weight']
-        : 0,
+    $form['available_widgets']['widgets'][$widget_name]['markup'] = array(
+      '#type' => 'textbox',
+      '#value' => $value,
     );
   }
 
-  // Sort the services.
-  uasort($form['available_services']['services'], 'drupal_sort_weight');
+  // Sort the widgets.
+  uasort($form['available_widgets']['widgets'], 'drupal_sort_weight');
 
-  $form['general']['name'] = array(
+  $form['name'] = array(
     '#type' => 'textfield',
-    '#title' => t('Set name'),
+    '#title' => t('Name'),
     '#required' => TRUE,
     '#maxlength' => 64,
     '#default_value' => $item->name,
-    '#description' => t('Example: Article Top'),
     '#weight' => -2,
   );
-  $form['general']['machinename'] = array(
+  $form['machinename'] = array(
     '#type' => 'machine_name',
     '#title' => t('Machine name'),
     '#maxlength' => 64,
@@ -130,84 +84,56 @@ function wysiwyg_widget_ctools_export_ui_form(&$form, &$form_state) { die('aaa')
   ) + $form['info']['machinename'];
   unset($form['info']);
 
-  $form['general']['block'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Create a block for this button set.'),
-    '#description' => '',
-    '#default_value' => $item->block,
-  );
-
-  $form['general']['title'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Title'),
-    '#description' => t('This is the title that appears above the share buttons.'),
-    '#default_value' => !empty($item->title) ? $item->title : '',
-    '#states' => array(
-      'visible' => array(
-        ':input[name="block"]' => array('checked' => TRUE),
-      ),
-    ),
-  );
-
   // Custom widgets.
-  foreach ($services as $service_name) {
-    $var_name = 'wysiwyg_widget_custom_' . $service_name;
+  foreach ($widgets as $widget_name => $value) {
+    $var_name = 'wysiwyg_widget_custom_' . $widget_name;
 
-    $form['custom_markup'][$var_name] = array(
+    $form[$var_name] = array(
       '#type' => 'textarea',
-      '#title' => t('Custom code for %name', array('%name' => $service_name)),
+      '#title' => t('Custom code for %name', array('%name' => $widget_name)),
       '#description' => '',
-      '#default_value' => wysiwyg_widget_get_service_content($service_name, $item->machinename),
-      '#states' => array(
-        'invisible' => array(
-          ':input[name="services[' . $service_name . '][enabled]"]' => array('checked' => FALSE),
-        ),
-      ),
+      '#default_value' => $value,
     );
   }
 }
 
 function wysiwyg_widget_ctools_export_ui_form_submit(&$form, &$form_state) {
-  $services_values = &$form_state['values']['services'];
-  uasort($services_values, 'drupal_sort_weight');
+  $widgets_values = &$form_state['values'];
+  uasort($widgets_values, 'drupal_sort_weight');
 
-  // Rewrite the valuees from the custom service code (coming from default).
-  foreach ($services_values as $key => &$service) {
+  foreach ($widgets_values as $key => &$value) {
     $custom_key = 'wysiwyg_widget_custom_' . $key;
 
     if (empty($form_state['values'][$custom_key])) {
       continue;
     }
 
-    $service['markup'] = $form_state['values'][$custom_key];
+    $value['markup'] = $form_state['values'][$custom_key];
   }
 }
 
-//@todo rename this
-// Theme function for wysiwyg_widget_manage_services().
-function theme_wysiwyg_widget_manage_services($variables) {
+//@todo rename or remove this
+// Theme function for wysiwyg_widget_manage_widgets().
+function theme_wysiwyg_widget_manage_widgets($variables) {
   $form = $variables['form'];
   $rows = array();
 
-  foreach (element_children($form) as $service_identifier) {
-    $form[$service_identifier]['weight']['#attributes']['class'] = array('services-order-weight');
+  foreach (element_children($form) as $value) {
+    $form[$value]['weight']['#attributes']['class'] = array('widgets-order-weight');
     $rows[] = array(
       'data' => array(
-        array('class' => array('service-cross')),
-        drupal_render($form[$service_identifier]['service']),
-        drupal_render($form[$service_identifier]['enabled']),
-        drupal_render($form[$service_identifier]['weight']),
+        drupal_render($form[$value]['service']),
+        drupal_render($form[$value]['enabled']),
+        drupal_render($form[$value]['weight']),
       ),
       'class' => array('draggable'),
     );
   }
 
-  $header = array('', t('Service'), t('Enabled'), t('Weight'));
+  $header = array('', t('Name'), t('Enabled'), t('Weight'));
   $output = drupal_render($form['note']);
   $output .= theme('table', array('header' => $header, 'rows' => $rows, 'attributes' => array('id' => 'service-order')));
   $output .= drupal_render_children($form);
-
-  drupal_add_tabledrag('service-order', 'order', 'sibling', 'services-order-weight');
 
   return $output;
 }

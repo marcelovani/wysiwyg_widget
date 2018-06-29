@@ -1,9 +1,9 @@
 INTRODUCTION
 ------------
 
-The Wysiwyg Widget allows javacript & html to be placed 
-in a controlled way into the wysiwyg editor. 
-NB it can allow ANY html tag to be used by configuring its filter 
+The Wysiwyg Widget allows javacript & html to be placed
+in a controlled way into the wysiwyg editor.
+NB it can allow ANY html tag to be used by configuring its filter
 to run after filters that clean html such as "Limit allowed HTML tags".
 
  * For a full description of the module, visit the project page:
@@ -21,7 +21,7 @@ This module requires the following modules:
 
 INSTALLATION
 ------------
- * Install as you would normally install a contributed Drupal module. 
+ * Install as you would normally install a contributed Drupal module.
    See:
    https://drupal.org/documentation/install/modules-themes/modules-7
    for further information.
@@ -29,19 +29,19 @@ INSTALLATION
 
 CONFIGURATION
 -------------
- * Enable the filter and set its order to be last 
-   or at least after filters that clean html, 
-   such as "Limit allowed HTML tags" 
-   for each format widgets are to be used on 
+ * Enable the filter and set its order to be last
+   or at least after filters that clean html,
+   such as "Limit allowed HTML tags"
+   for each format widgets are to be used on
    (/admin/config/content/formats).
 
- * Enable the "Wysiwyg embed" button in each wysiwyg profile 
+ * Enable the "Wysiwyg embed" button in each wysiwyg profile
    that will have widgets.
 
  * It is possible to send the X-XSS-Protection header in order
    to solve an issue with Chrome being hypersensitive towards tags
    included in the WYSIWYG editor using the widget ("err_blocked_by_xss_auditor"
-   error). To do that, visit admin/config/content/wysiwyg_widget and
+   error). To do that, visit admin/structure/wysiwyg_widget/settings and
    check the "Send X-XSS-Protection header" checkbox to disable XSS filtering
    on every page where the wysiwyg_widget plugin is present.
 

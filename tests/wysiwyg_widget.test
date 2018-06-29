@@ -60,7 +60,7 @@ class WysiwygWidgetTest extends DrupalWebTestCase {
     $this->drupalLogin($this->adminUser);
     $this->drupalGet('admin/modules');
     $link = $this->xpath('//a[contains(@href, :href) and contains(@id, :id)]', [
-      ':href' => 'admin/config/content/wysiwyg_widget',
+      ':href' => 'admin/structure/wysiwyg_widget/settings',
       ':id' => 'edit-modules-user-interface-wysiwyg-widget-links-configure'
     ]);
     $this->assertTrue(count($link) === 1, 'Link to config is present');
@@ -71,6 +71,6 @@ class WysiwygWidgetTest extends DrupalWebTestCase {
    */
   function testAdminUI() {
     $this->drupalLogin($this->adminUser);
-    $this->drupalGet('admin/config/content/wysiwyg_widget');
+    $this->drupalGet('admin/structure/wysiwyg_widget/settings');
   }
 }

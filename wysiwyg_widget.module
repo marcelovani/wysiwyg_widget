@@ -5,6 +5,29 @@
  */
 
 /**
+ * Implementation of hook_ctools_plugin_api().
+ *
+ * Tell CTools that we support the default_mymodule_presets API.
+ */
+function wysiwyg_widget_ctools_plugin_api($owner, $api) {
+  if ($owner == 'wysiwyg_widget' && $api == 'default_wysiwyg_widget') {
+    return array('version' => 1);
+  }
+}
+
+/**
+ * Implements hook_ctools_plugin_directory().
+ *
+ * Telling CTools that we want to define an 'export_ui' plugin.
+ */
+function wysiwyg_widget_ctools_plugin_directory($module, $type) {
+  // Load the export_ui plugin.
+  if ($type == 'export_ui') {
+    return 'plugins/export_ui';
+  }
+}
+
+/**
  * Implements hook_wysiwyg_include_directory().
  */
 function wysiwyg_widget_wysiwyg_include_directory($type) {
@@ -47,13 +70,13 @@ function _wysiwyg_widget_embed_filter($text, $filter, $format, $langcode, $cache
 function wysiwyg_widget_menu() {
   $items = array();
 
-  $items['admin/config/content/wysiwyg_widget'] = array(
-    'title' => t('Wysiwyg Widget settings'),
+  $items['admin/structure/wysiwyg_widget/settings'] = array(
+    'title' => t('Settings'),
     'description' => t('Configure settings for Wysiwyg Widget.'),
     'page callback' => 'drupal_get_form',
     'page arguments' => array('wysiwyg_widget_settings'),
     'access arguments' => array('administer site configuration'),
-    'type' => MENU_NORMAL_ITEM,
+    'type' => MENU_LOCAL_TASK,
   );
 
   return $items;
@@ -85,32 +108,6 @@ function wysiwyg_widget_wysiwyg_editor_settings_alter(&$settings, $context) {
   // Only send the header when the widget_embed plugin is present.
   if ($set_XSS_header == 1 && strpos($settings['plugins'], 'widget_embed') !== FALSE) {
     drupal_add_http_header('X-XSS-Protection', '0');
-  }
-}
-
-/**
- * Implementation of hook_ctools_plugin_api().
- *
- * Tell CTools that we support the default_mymodule_presets API.
- */
-function wysiwyg_widget_ctools_plugin_api($owner, $api) {
-  var_dump($owner);
-  var_dump($api);
-  if ($owner == 'wysiwyg_widget' && $api == 'default_wysiwyg_widget') {
-    return array('version' => 1);
-  }
-}
-
-/**
- * Implements hook_ctools_plugin_directory().
- *
- * Telling CTools that we want to define an 'export_ui' plugin.
- */
-function wysiwyg_widget_ctools_plugin_directory($module, $type) {
-  var_dump($module);
-  // Load the export_ui plugin.
-  if ($type == 'export_ui') {
-    return 'plugins/export_ui';
   }
 }
 
