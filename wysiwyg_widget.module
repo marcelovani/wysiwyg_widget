@@ -6,19 +6,15 @@
 
 /**
  * Implementation of hook_ctools_plugin_api().
- *
- * Tell CTools that we support the default_mymodule_presets API.
  */
 function wysiwyg_widget_ctools_plugin_api($owner, $api) {
-  if ($owner == 'wysiwyg_widget' && $api == 'default_wysiwyg_widget') {
+  if ($owner == 'wysiwyg_widget' && $api == 'default_wysiwyg_widget_sets') {
     return array('version' => 1);
   }
 }
 
 /**
  * Implements hook_ctools_plugin_directory().
- *
- * Telling CTools that we want to define an 'export_ui' plugin.
  */
 function wysiwyg_widget_ctools_plugin_directory($module, $type) {
   // Load the export_ui plugin.

@@ -2,13 +2,13 @@
 
 /**
  * @file
- * A custom Ctools Export UI class for Sharerich Sets.
+ * A custom Ctools Export UI class for Wysiwyg Widget Sets.
  */
 
 /**
  * Customizations of the Wysiwyg Widget UI.
  */
-class wysiwyg_widget_ui extends ctools_export_ui {
+class wysiwyg_widget_set_ui extends ctools_export_ui {
 
   /**
    * Build a row based on the item.
@@ -53,7 +53,7 @@ class wysiwyg_widget_ui extends ctools_export_ui {
   function list_table_header() {
     $header = array();
 
-    $header[] = array('data' => t('Widget'), 'class' => array('ctools-export-ui-name'));
+    $header[] = array('data' => t('Button set'), 'class' => array('ctools-export-ui-name'));
     $header[] = array('data' => t('Storage'), 'class' => array('ctools-export-ui-storage'));
     $header[] = array('data' => t('Operations'), 'class' => array('ctools-export-ui-operations'));
 

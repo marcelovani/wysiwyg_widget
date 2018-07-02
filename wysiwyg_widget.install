@@ -9,27 +9,27 @@
  * Implements hook_schema().
  */
 function wysiwyg_widget_schema() {
-  $schema['wysiwyg_widget'] = array(
-    'description' => 'Stores Wysiwyg Widget.',
+  $schema['wysiwyg_widget_sets'] = array(
+    'description' => 'Stores Wysiwyg Widget Sets.',
     'export' => array(
       'key' => 'machinename',
       'primary key' => 'swid',
-      'identifier' => 'wysiwyg_widget', // Exports will be available as $wysiwyg_widget
-      'default hook' => 'default_wysiwyg_widget', // Function hook name.
+      'identifier' => 'wysiwyg_widget_set', // Exports will be available as $wysiwyg_widget_set
+      'default hook' => 'default_wysiwyg_widget_sets', // Function hook name.
       'api' => array(
         'owner' => 'wysiwyg_widget',
-        'api' => 'default_wysiwyg_widget', // Base name for api include files.
+        'api' => 'default_wysiwyg_widget_sets', // Base name for api include files.
         'minimum_version' => 1,
         'current_version' => 1,
       ),
-      'load callback' => 'wysiwyg_widget_load',
+      'load callback' => 'wysiwyg_widget_set_load',
     ),
     'fields' => array(
       'swid' => array(
         'type' => 'serial',
         'unsigned' => TRUE,
         'not null' => TRUE,
-        'description' => 'Primary ID field for the table. Not used for anything except internal lookups.',
+        'description' => 'Primary ID field for the table. Not used for anything except internal look ups.',
         'no export' => TRUE, // Do not export database-only keys.
       ),
       'name' => array(
@@ -46,11 +46,9 @@ function wysiwyg_widget_schema() {
         'default' => '',
         'description' => "The machine readable name.",
       ),
-      'widget' => array(
+      'embed_code' => array(
         'type' => 'blob',
         'size' => 'big',
-        'serialize' => TRUE,
-        'description' => "The widget.",
       ),
     ),
     'primary key' => array('swid'),
