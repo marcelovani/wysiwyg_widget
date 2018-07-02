@@ -50,3 +50,14 @@ HOOK API
  * hook_wysiwyg_widget_embed_alter(&$placeholders)
    Allows custom placeholders to be used for various widgets.
    see wysiwyg_widget.api.php for details.
+
+@todo
+skimlinks new major cut
+
+delete/deprecate hook
+
+update hook to import into ctoools by invokng the alter hooks
+
+requirement hook with message saying about chaingign hook
+
+
