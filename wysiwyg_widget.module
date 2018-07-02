@@ -8,7 +8,7 @@
  * Implementation of hook_ctools_plugin_api().
  */
 function wysiwyg_widget_ctools_plugin_api($owner, $api) {
-  if ($owner == 'wysiwyg_widget' && $api == 'default_wysiwyg_widget_sets') {
+  if ($owner == 'wysiwyg_widget' && $api == 'default_wysiwyg_widget_embed') {
     return array('version' => 1);
   }
 }
@@ -108,68 +108,125 @@ function wysiwyg_widget_wysiwyg_editor_settings_alter(&$settings, $context) {
 }
 
 /**
- * Load function.
+ * Return an array of all wysiwyg_widget.
  *
- * @param string $machinename
- *
- * @return object
+ * @param bool $reset
+ *   If TRUE, reset the static cache forcing views to be reloaded.
  */
-function wysiwyg_widget_load($machinename) {
-
+function wysiwyg_widget_get_all_placeholders($reset = FALSE) {
   ctools_include('export');
 
-  $sets = &drupal_static(__FUNCTION__, array());
-
-  if (!isset($sets[$machinename])) {
-    // Load the set.
-    $result = ctools_export_load_object('wysiwyg_widgets', 'names', array($machinename));
-    if (isset($result[$machinename])) {
-      $set = $result[$machinename];
-    }
-    else {
-      return NULL;
-    }
-
-    // Store the original set. This is used by the set edit form.
-    $set->raw = clone $set;
-
-    // Allow modules to alter the raw set object.
-    drupal_alter('wysiwyg_widget_load', $set);
-
-    // Configure this set based on the defined settings.
-    $set->wrapper_id = 'wysiwyg-widget-' . $set->machinename . '-wrapper';
-    $set->placeholder_id = 'wysiwyg-widget-' . $set->machinename;
-
-    // Allow modules to alter the fully-loaded set object.
-    drupal_alter('wysiwyg_widget', $set);
-
-    // Statically cache the fully loaded set.
-    $sets[$machinename] = $set;
-  }
-  else {
-    // Use the statically cached set object.
-    $set = $sets[$machinename];
-  }
-
-  return $set;
+  return ctools_export_crud_load_all('wysiwyg_widget', $reset);
 }
 
 /**
- * Load all widgets.
+ * Returns a machine name.
  *
- * @param boolean $include_disabled
+ * @param $name The human readable name.
  *
- * @return array of sets.
+ * @return String The machine name.
  */
-function wysiwyg_widgets_load_all($include_disabled = FALSE) {
-  ctools_include('export');
+function _wysiwyg_widget_machine_name($name) {
+  return preg_replace('@[^a-z0-9-]+@','_', strtolower($name));
+}
 
-  $sets = ctools_export_crud_load_all('wysiwyg_widgets');
-  foreach ($sets as $key => $set) {
-    if (!$include_disabled && isset($set->disabled) && $set->disabled) {
-      unset($sets[$key]);
-    }
+/**
+ * Writes the widget name on the placeholder image.
+ *
+ * @param $text The human readable name.
+ *
+ * @return $filename The generated image.
+ */
+function _wysiwyg_widget_generate_image($text) {
+  $filename = sprintf('public://wysiwyg_widget_%s.png',
+    _wysiwyg_widget_machine_name($text)
+  );
+print_r($filename) . '<br>';
+  if (file_exists($filename)) {
+    return $filename;
   }
 
-  return $sets;
+  // Create image from png.
+  $im = imagecreatefrompng(drupal_get_path('module', 'wysiwyg_widget') . '/plugins/widget_embed/images/widget.png');
+
+  $font = 2;
+  $width = imagesx($im);
+  $height = imagesy($im);
+  $text_color = imagecolorallocate($im, 0, 0, 255);
+  $text_x_pos = ( $width - imagefontwidth($font) * strlen($text) ) / 2;
+  $text_y_pos = ( $height - 10 ) / 2;
+  imagestring($im, 2, $text_x_pos, $text_y_pos, $text, $text_color);
+  imagejpeg($im, $filename);
+  imagedestroy($im);
+
+  return $filename;
 }
+
+
+//
+///**
+// * Load function.
+// *
+// * @param string $machinename
+// *
+// * @return object
+// */
+//function wysiwyg_widget_load($machinename) {
+//
+//  ctools_include('export');
+//
+//  $sets = &drupal_static(__FUNCTION__, array());
+//
+//  if (!isset($sets[$machinename])) {
+//    // Load the set.
+//    $result = ctools_export_load_object('wysiwyg_widgets', 'names', array($machinename));
+//    if (isset($result[$machinename])) {
+//      $set = $result[$machinename];
+//    }
+//    else {
+//      return NULL;
+//    }
+//
+//    // Store the original set. This is used by the set edit form.
+//    $set->raw = clone $set;
+//
+//    // Allow modules to alter the raw set object.
+//    drupal_alter('wysiwyg_widget_load', $set);
+//
+//    // Configure this set based on the defined settings.
+//    $set->wrapper_id = 'wysiwyg-widget-' . $set->machinename . '-wrapper';
+//    $set->placeholder_id = 'wysiwyg-widget-' . $set->machinename;
+//
+//    // Allow modules to alter the fully-loaded set object.
+//    drupal_alter('wysiwyg_widget', $set);
+//
+//    // Statically cache the fully loaded set.
+//    $sets[$machinename] = $set;
+//  }
+//  else {
+//    // Use the statically cached set object.
+//    $set = $sets[$machinename];
+//  }
+//
+//  return $set;
+//}
+//
+///**
+// * Load all widgets.
+// *
+// * @param boolean $include_disabled
+// *
+// * @return array of sets.
+// */
+//function wysiwyg_widgets_load_all($include_disabled = FALSE) {
+//  ctools_include('export');
+//
+//  $sets = ctools_export_crud_load_all('wysiwyg_widgets');
+//  foreach ($sets as $key => $set) {
+//    if (!$include_disabled && isset($set->disabled) && $set->disabled) {
+//      unset($sets[$key]);
+//    }
+//  }
+//
+//  return $sets;
+//}

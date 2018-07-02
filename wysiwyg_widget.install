@@ -9,16 +9,15 @@
  * Implements hook_schema().
  */
 function wysiwyg_widget_schema() {
-  $schema['wysiwyg_widget_sets'] = array(
-    'description' => 'Stores Wysiwyg Widget Sets.',
+  $schema['wysiwyg_widget'] = array(
+    'description' => 'Stores Wysiwyg Widget Embeds.',
     'export' => array(
-      'key' => 'machinename',
       'primary key' => 'swid',
       'identifier' => 'wysiwyg_widget_set', // Exports will be available as $wysiwyg_widget_set
-      'default hook' => 'default_wysiwyg_widget_sets', // Function hook name.
+      'default hook' => 'default_wysiwyg_widget_embed', // Function hook name.
       'api' => array(
         'owner' => 'wysiwyg_widget',
-        'api' => 'default_wysiwyg_widget_sets', // Base name for api include files.
+        'api' => 'default_wysiwyg_widget_embed', // Base name for api include files.
         'minimum_version' => 1,
         'current_version' => 1,
       ),
@@ -37,24 +36,21 @@ function wysiwyg_widget_schema() {
         'length' => 255,
         'not null' => TRUE,
         'default' => '',
-        'description' => "The unique name.",
       ),
-      'machinename' => array(
+      'pattern' => array(
         'type' => 'varchar',
         'length' => 255,
         'not null' => TRUE,
         'default' => '',
-        'description' => "The machine readable name.",
       ),
-      'embed_code' => array(
-        'type' => 'blob',
-        'size' => 'big',
+      'flags' => array(
+        'type' => 'varchar',
+        'length' => 5,
+        'not null' => TRUE,
+        'default' => 'gi',
       ),
     ),
     'primary key' => array('swid'),
-    'unique keys' => array(
-      'machinename' => array('machinename'),
-    ),
   );
 
   return $schema;
@@ -66,13 +62,36 @@ function wysiwyg_widget_schema() {
 function wysiwyg_widget_uninstall() {
   drupal_uninstall_schema('wysiwyg_widget');
   variable_del('wysiwyg_widget_xss_header');
+  variable_del('wysiwyg_widget_widget_embed_placeholders_only');
 }
 
 /**
- * Create wysiwyg_widget table.
+ * Create wysiwyg_widget table and populate values from hook.
  */
-function wysiwyg_widget_update_7001() {
+function wysiwyg_widget_update_7012() {
+  ctools_include('export');
+
+  // Create database if needed.
   if (db_table_exists('wysiwyg_widget') == FALSE) {
     drupal_install_schema('wysiwyg_widget');
+  }
+
+  // Import configuration from hooks.
+  $placeholders = array();
+  drupal_alter('wysiwyg_widget_embed', $placeholders);
+  foreach ($placeholders as $key => $placeholder) {
+    $name = str_replace('-', ' ', $key);
+    $name = str_replace('_', ' ', $name);
+
+    $item = new stdClass();
+    $item->swid = NULL;
+    $item->name = ucfirst($name);
+    $item->pattern = isset($placeholder['regex']['pattern']) ? $placeholder['regex']['pattern'] : '';
+    $item->flags = isset($placeholder['regex']['flags']) ? $placeholder['regex']['flags'] : '';
+    $item->type = 'Normal';
+    $item->export_type = NULL;
+
+    ctools_export_crud_save('wysiwyg_widget', $item);
+    drupal_set_message(t('Imported Widget Embed placeholder: :name', array(':name' => $item->name)));
   }
 }

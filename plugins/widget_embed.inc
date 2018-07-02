@@ -31,10 +31,7 @@ function wysiwyg_widget_widget_embed_plugin() {
 <input id="edit-widget-embed-cancel" class="button-no form-submit" type="submit" value="Cancel" name="op" onclick="return (false);"></input>
 </form>
 </div>',
-    'icon_markup' => '<img class="wysiwyg-widget-embed-img" title="Widget embed" ' .
-      'src="' . drupal_get_path('module', 'wysiwyg_widget') .
-      '/plugins/widget_embed/images/widget.png' . '" />',
-
+    'icon_markup' => '',
     'placeholders' => array(),
     // By default let ANY code be put into a widget.
     // To restrict to predifined widgets, set this to true
@@ -43,8 +40,28 @@ function wysiwyg_widget_widget_embed_plugin() {
   ),
   );
 
+  $placeholders = &$plugins['widget_embed']['settings']['placeholders'];
+  foreach (wysiwyg_widget_get_all_placeholders() as $name => $item) {
+    $machine_name = _wysiwyg_widget_machine_name($name);
+
+    $placeholder = array();
+
+    $placeholder['regex'] = array(
+      'pattern' => $item->pattern,
+      'flags' => $item->flags,
+    );
+
+    $placeholder['icon_markup'] = sprintf('<img class="%s" title="%s" src="%s" />',
+      'wysiwyg-widget-embed-img',
+      $name,
+      file_create_url(_wysiwyg_widget_generate_image($name))
+    );
+
+    $placeholders[$machine_name] = $placeholder;
+  }
+
   // Allow module to set placeholders for widgets.
-  drupal_alter('wysiwyg_widget_embed', $plugins['widget_embed']['settings']['placeholders']);
+  drupal_alter('wysiwyg_widget_embed', $placeholders);
 
   return $plugins;
 }

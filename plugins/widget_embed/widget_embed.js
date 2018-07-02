@@ -57,6 +57,7 @@
               // Replace with provided placeholders if possible
               for (var placeholder in settings.placeholders) {
                 // Add regex flags if provided
+                console.log(settings.placeholders[placeholder]);
                 var flags = settings.placeholders[placeholder].regex.flags ? settings.placeholders[placeholder].regex.flags : '';
                 reg = new RegExp(settings.placeholders[placeholder].regex.pattern, flags);
                 if ((reg.test(comment.nodeValue))) {
@@ -140,6 +141,7 @@
               var reg;
               // Replace with provided placeholders if possible
               for (var placeholder in settings.placeholders) {
+                console.log(settings.placeholders[placeholder]);
                 // Add regex flags if provided
                 var flags = settings.placeholders[placeholder].regex.flags ? settings.placeholders[placeholder].regex.flags : '';
                 reg = new RegExp(settings.placeholders[placeholder].regex.pattern, flags);
