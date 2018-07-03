@@ -93,6 +93,7 @@
     detach: function (content) {
       var jo = jQuery('<div>' + content + '</div>');
       jo.find('img').each(function () {
+        //console.log(jQuery(this).data('widget'));
         if (jQuery(this).data('widget')) {
           jQuery(this).replaceWith('<!--widget_embed:' + jQuery(this).data('widget') + '-->');
         }

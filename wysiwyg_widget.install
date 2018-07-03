@@ -90,7 +90,7 @@ function wysiwyg_widget_uninstall() {
 /**
  * Create wysiwyg_widget table and populate values from hook.
  */
-function wysiwyg_widget_update_7012() {
+function wysiwyg_widget_update_7001() {
   ctools_include('export');
 
   // Create database if needed.
