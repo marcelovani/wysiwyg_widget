@@ -44,20 +44,3 @@ CONFIGURATION
    error). To do that, visit admin/structure/wysiwyg_widget/settings and
    check the "Send X-XSS-Protection header" checkbox to disable XSS filtering
    on every page where the wysiwyg_widget plugin is present.
-
-HOOK API
---------
- * hook_wysiwyg_widget_embed_alter(&$placeholders)
-   Allows custom placeholders to be used for various widgets.
-   see wysiwyg_widget.api.php for details.
-
-@todo
-skimlinks new major cut
-
-delete/deprecate hook
-
-update hook to import into ctoools by invokng the alter hooks
-
-requirement hook with message saying about chaingign hook
-
-
