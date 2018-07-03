@@ -79,19 +79,6 @@ class WysiwygWidgetTest extends DrupalWebTestCase {
     );
     $this->drupalPost(NULL, $filters, t('Save configuration'));
 
-    // Add a new widget.
-    $this->drupalGet('admin');
-    $this->clickLink('Structure');
-    $this->clickLink('Wysiwyg Widget');
-    $this->clickLink('Add');
-
-    $widget = array(
-      'name' => $this->randomName(8),
-      'pattern' => $this->randomName(8),
-      'flags' => 'gi',
-    );
-    $this->drupalPost(NULL, $widget, t('Save'));
-
     // Configure XSS header.
     $this->drupalGet('admin/structure/wysiwyg_widget/settings');
     $this->assertRaw('Send X-XSS-Protection header');
@@ -101,8 +88,25 @@ class WysiwygWidgetTest extends DrupalWebTestCase {
     );
     $this->drupalPost(NULL, $config, t('Save configuration'));
 
-    // Create a node with the widget.
-    $markup = '<!--widget_embed:%3Cdiv%20class%3D%22' . $widget['name'] . '%22%3E' . $widget['pattern'] . '%3C/div%3E-->';
+    // Add a new widget.
+    $this->drupalGet('admin');
+    $this->clickLink('Structure');
+    $this->clickLink('Wysiwyg Widget');
+    $this->clickLink('Add');
+
+    $widget = array(
+      'name' => 'Twitter single tweet',
+      'pattern' => 'Twitter single tweet',
+      'flags' => 'gi',
+    );
+    $this->drupalPost(NULL, $widget, t('Save'));
+
+    // Create a node with the Twitter widget.
+    $markup = '<blockquote class="twitter-tweet" data-lang="en">
+<a href="https://twitter.com/FIFAWorldCup/status/1013877667307884544?ref_src=twsrc%5Etfw">July 2, 2018</a>
+</blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+';
     $node = $this->createNode($markup);
 
     $this->drupalGet('node/' . $node->nid);
