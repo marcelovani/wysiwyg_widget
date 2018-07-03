@@ -141,7 +141,7 @@ function _wysiwyg_widget_generate_image($text) {
   $filename = sprintf('public://wysiwyg_widget_%s.png',
     _wysiwyg_widget_machine_name($text)
   );
-print_r($filename) . '<br>';
+
   if (file_exists($filename)) {
     return $filename;
   }
