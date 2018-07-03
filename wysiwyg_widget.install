@@ -5,6 +5,28 @@
  * Install hooks for Wysiwyg Widget project.
  */
 
+
+/**
+ * Implements hook_requirements().
+ */
+function wysiwyg_widget_requirements($phase) {
+  $requirements = array();
+  $t = get_t();
+
+  if ($phase == 'runtime') {
+    if ($modules = module_implements('wysiwyg_widget_embed_alter')) {
+      $requirements['wysiwyg_widget'] = array(
+        'title' => 'Wysiwyg Widget',
+        'value' => $t('hook_wysiwyg_widget_embed_alter() is no longer supported. You can use Ctools hooks to alter the objects.'),
+        'description' => $t('The following modules are still using the deprecated hook: !modules', array('!modules' => implode(',', $modules))),
+        'severity' => REQUIREMENT_WARNING,
+      );
+    }
+
+    return $requirements;
+  }
+}
+
 /**
  * Implements hook_schema().
  */
