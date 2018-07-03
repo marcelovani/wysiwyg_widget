@@ -8,7 +8,7 @@
  * Implementation of hook_ctools_plugin_api().
  */
 function wysiwyg_widget_ctools_plugin_api($owner, $api) {
-  if ($owner == 'wysiwyg_widget' && $api == 'default_wysiwyg_widget_embed') {
+  if ($owner == 'wysiwyg_widget' && $api == 'default_wysiwyg_widget_set') {
     return array('version' => 1);
   }
 }

@@ -16,6 +16,7 @@ to run after filters that clean html such as "Limit allowed HTML tags".
 REQUIREMENTS
 ------------
 This module requires the following modules:
+ * Ctools (https://drupal.org/project/ctools)
  * Wysiwyg (https://drupal.org/project/wysiwyg)
 
 

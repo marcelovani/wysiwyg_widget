@@ -14,16 +14,10 @@ class WysiwygWidgetTest extends DrupalWebTestCase {
    * @var array
    */
   public $modules = array(
-    'wysiwyg',
-    'node',
-    'field',
-    'text',
-    'wysiwyg_widget'
+    'wysiwyg_widget',
   );
 
   /**
-   * A user with the 'Administer Wysiwyg Widget' permission.
-   *
    * @var object
    */
   protected $adminUser;
@@ -37,7 +31,7 @@ class WysiwygWidgetTest extends DrupalWebTestCase {
   public static function getInfo() {
     return array(
       'name' => 'Wysiwyg Widget',
-      'description' => 'Test Wysiwyg Widget admin UI.',
+      'description' => 'Tests for Wysiwyg Widget.',
       'group' => 'Wysiwyg Widget',
     );
   }
@@ -53,11 +47,18 @@ class WysiwygWidgetTest extends DrupalWebTestCase {
       'access administration pages',
       'administer site configuration',
       'administer modules',
+      'create article content',
+      'edit own article content',
+      'administer filters',
     ));
+
+    $this->drupalLogin($this->adminUser);
   }
 
+  /**
+   * Modules page.
+   */
   function testLinkToConfig() {
-    $this->drupalLogin($this->adminUser);
     $this->drupalGet('admin/modules');
     $link = $this->xpath('//a[contains(@href, :href) and contains(@id, :id)]', [
       ':href' => 'admin/structure/wysiwyg_widget/settings',
@@ -70,7 +71,67 @@ class WysiwygWidgetTest extends DrupalWebTestCase {
    * Admin UI.
    */
   function testAdminUI() {
-    $this->drupalLogin($this->adminUser);
+    // Configure input filters.
+    $this->drupalGet('admin/config/content/formats/filtered_html');
+
+    $filters = array(
+      'filters[widget_embed][status]' => 1,
+    );
+    $this->drupalPost(NULL, $filters, t('Save configuration'));
+
+    // Add a new widget.
+    $this->drupalGet('admin');
+    $this->clickLink('Structure');
+    $this->clickLink('Wysiwyg Widget');
+    $this->clickLink('Add');
+
+    $widget = array(
+      'name' => $this->randomName(8),
+      'pattern' => $this->randomName(8),
+      'flags' => 'gi',
+    );
+    $this->drupalPost(NULL, $widget, t('Save'));
+
+    // Configure XSS header.
     $this->drupalGet('admin/structure/wysiwyg_widget/settings');
+    $this->assertRaw('Send X-XSS-Protection header');
+
+    $config = array(
+      'wysiwyg_widget_xss_header' => 1,
+    );
+    $this->drupalPost(NULL, $config, t('Save configuration'));
+
+    // Create a node with the widget.
+    $markup = '<!--widget_embed:%3Cdiv%20class%3D%22' . $widget['name'] . '%22%3E' . $widget['pattern'] . '%3C/div%3E-->';
+    $node = $this->createNode($markup);
+
+    $this->drupalGet('node/' . $node->nid);
+    $this->assertText($node->title);
+
+    $this->drupalGet('node/' . $node->nid);
   }
+
+  /**
+   * Creates nodes for testing.
+   *
+   * @param string $markup
+   *   Create the node with media markup in the body field
+   *
+   * @return object
+   *   Returns the node
+   */
+  protected function createNode($markup = '') {
+    // Create an article node with file markup in the body field.
+    $edit = array(
+      'title' => $this->randomName(8),
+      'body[und][0][value]' => $markup,
+    );
+    $this->drupalPost('node/add/article', $edit, t('Save'));
+
+    // Get the article node that was saved by the unique title.
+    $node = $this->drupalGetNodeByTitle($edit['title']);
+
+    return $node;
+  }
+
 }

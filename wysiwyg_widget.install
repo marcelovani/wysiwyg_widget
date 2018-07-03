@@ -32,14 +32,14 @@ function wysiwyg_widget_requirements($phase) {
  */
 function wysiwyg_widget_schema() {
   $schema['wysiwyg_widget'] = array(
-    'description' => 'Stores Wysiwyg Widget Embeds.',
+    'description' => 'Stores Wysiwyg Widget Sets.',
     'export' => array(
       'primary key' => 'swid',
       'identifier' => 'wysiwyg_widget_set', // Exports will be available as $wysiwyg_widget_set
-      'default hook' => 'default_wysiwyg_widget_embed', // Function hook name.
+      'default hook' => 'default_wysiwyg_widget_set', // Function hook name.
       'api' => array(
         'owner' => 'wysiwyg_widget',
-        'api' => 'default_wysiwyg_widget_embed', // Base name for api include files.
+        'api' => 'default_wysiwyg_widget_set', // Base name for api include files.
         'minimum_version' => 1,
         'current_version' => 1,
       ),
@@ -101,19 +101,21 @@ function wysiwyg_widget_update_7012() {
   // Import configuration from hooks.
   $placeholders = array();
   drupal_alter('wysiwyg_widget_embed', $placeholders);
-  foreach ($placeholders as $key => $placeholder) {
-    $name = str_replace('-', ' ', $key);
-    $name = str_replace('_', ' ', $name);
+  if (!empty($placeholders)) {
+    foreach ($placeholders as $key => $placeholder) {
+      $name = str_replace('-', ' ', $key);
+      $name = str_replace('_', ' ', $name);
 
-    $item = new stdClass();
-    $item->swid = NULL;
-    $item->name = ucfirst($name);
-    $item->pattern = isset($placeholder['regex']['pattern']) ? $placeholder['regex']['pattern'] : '';
-    $item->flags = isset($placeholder['regex']['flags']) ? $placeholder['regex']['flags'] : '';
-    $item->type = 'Normal';
-    $item->export_type = NULL;
+      $item = new stdClass();
+      $item->swid = NULL;
+      $item->name = ucfirst($name);
+      $item->pattern = isset($placeholder['regex']['pattern']) ? $placeholder['regex']['pattern'] : '';
+      $item->flags = isset($placeholder['regex']['flags']) ? $placeholder['regex']['flags'] : '';
+      $item->type = 'Normal';
+      $item->export_type = NULL;
 
-    ctools_export_crud_save('wysiwyg_widget', $item);
-    drupal_set_message(t('Imported Widget Embed placeholder: :name', array(':name' => $item->name)));
+      ctools_export_crud_save('wysiwyg_widget', $item);
+      drupal_set_message(t('Imported Widget Embed placeholder: :name', array(':name' => $item->name)));
+    }
   }
 }

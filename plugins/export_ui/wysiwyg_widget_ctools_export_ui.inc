@@ -38,7 +38,7 @@ function wysiwyg_widget_ctools_export_ui_form(&$form, &$form_state) {
   $form['pattern'] = array(
     '#type' => 'textfield',
     '#title' => t('Pattern'),
-    '#description' => 'The pattern to match this widget embed.',
+    '#description' => 'The pattern to match this widget embed',
     '#rows' => 15,
     '#default_value' => $form_state['item']->pattern,
   );
