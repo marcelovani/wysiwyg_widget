@@ -10,6 +10,10 @@
  * Should be named {$module}_{$plugin}_plugin().
  */
 function wysiwyg_widget_widget_embed_plugin() {
+  if (!path_is_admin(current_path())) {
+    return;
+  }
+
   $plugins['widget_embed'] = array(
     'title' => t('Widget embed'),
     'icon file' => 'widget_embed.png',
