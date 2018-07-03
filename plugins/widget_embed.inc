@@ -37,7 +37,7 @@ function wysiwyg_widget_widget_embed_plugin() {
     // To restrict to predifined widgets, set this to true
     // and create widget placeholders for allowed widgets in hook_wysiwyg_widget_embed_alter().
     'placeholders_only' => variable_get('wysiwyg_widget_widget_embed_placeholders_only', FALSE),
-  ),
+    ),
   );
 
   $placeholders = &$plugins['widget_embed']['settings']['placeholders'];
@@ -59,9 +59,6 @@ function wysiwyg_widget_widget_embed_plugin() {
 
     $placeholders[$machine_name] = $placeholder;
   }
-
-  // Allow module to set placeholders for widgets.
-  drupal_alter('wysiwyg_widget_embed', $placeholders);
 
   return $plugins;
 }
