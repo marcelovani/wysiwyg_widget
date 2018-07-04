@@ -116,13 +116,6 @@
 
         if (settings.data !== undefined) {
           var widgetBody = window.unescape(settings.data);
-
-          // As we add the wrapper on popup submit - there is no reason to show
-          // it in the popup. Delete it - and it will be added again on submit.
-          if (jQuery(widgetBody).filter('.' + wrapperClass)) {
-            widgetBody = jQuery(widgetBody).unwrap().html();
-          }
-
           jQuery('#edit-widget-embed-body').val(widgetBody);
           jQuery('#edit-widget-embed-insert').val('Update');
           // Clear the data now that it's been used.
