@@ -16,10 +16,10 @@ $plugin = array(
     'menu description' => 'Manage Wysiwyg Widget Embeds.',
   ),
   // Define user interface texts.
-  'title singular' => t('embed'),
-  'title plural' => t('embeds'),
-  'title singular proper' => t('Wysiwyg Widget embed'),
-  'title plural proper' => t('Wysiwyg Widget embeds'),
+  'title singular' => t('placeholder'),
+  'title plural' => t('placeholders'),
+  'title singular proper' => t('Wysiwyg Widget placeholder'),
+  'title plural proper' => t('Wysiwyg Widget placeholders'),
   // Define the class to use as a handler for DFP ad tags.
   'handler' => array(
     'class' => 'wysiwyg_widget_set_ui',

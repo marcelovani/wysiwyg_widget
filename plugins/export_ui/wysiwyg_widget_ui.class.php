@@ -50,7 +50,7 @@ class wysiwyg_widget_set_ui extends ctools_export_ui {
    */
   function list_table_header() {
     $header = array();
-    $header[] = array('data' => t('Button set'), 'class' => array('ctools-export-ui-name'));
+    $header[] = array('data' => t('Wysiwyg Widget placeholders'), 'class' => array('ctools-export-ui-name'));
     $header[] = array('data' => t('Storage'), 'class' => array('ctools-export-ui-storage'));
     $header[] = array('data' => t('Operations'), 'class' => array('ctools-export-ui-operations'));
 
