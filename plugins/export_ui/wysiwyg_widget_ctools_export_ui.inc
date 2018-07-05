@@ -39,7 +39,6 @@ function wysiwyg_widget_ctools_export_ui_form(&$form, &$form_state) {
     '#type' => 'textfield',
     '#title' => t('Pattern'),
     '#description' => 'The pattern to match this widget embed',
-    '#rows' => 15,
     '#default_value' => $form_state['item']->pattern,
   );
   $form['flags'] = array(
@@ -47,7 +46,18 @@ function wysiwyg_widget_ctools_export_ui_form(&$form, &$form_state) {
     '#title' => t('Flags'),
     '#size' => 5,
     '#description' => 'Regex flags. i.e. gi',
-    '#rows' => 15,
     '#default_value' => $form_state['item']->flags,
+  );
+  $form['external_js'] = array(
+    '#type' => 'textfield',
+    '#title' => t('External JS'),
+    '#description' => 'External JS',
+    '#default_value' => $form_state['item']->external_js,
+  );
+  $form['external_js_async'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Load external JS Asynchronously'),
+    '#description' => 'Load external JS Asynchronously',
+    '#default_value' => $form_state['item']->external_js_async,
   );
 }

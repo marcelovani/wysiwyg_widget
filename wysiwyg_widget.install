@@ -71,6 +71,19 @@ function wysiwyg_widget_schema() {
         'not null' => TRUE,
         'default' => 'gi',
       ),
+      'external_js' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'external_js_async' => array(
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 0,
+        'unsigned' => TRUE,
+      ),
     ),
     'primary key' => array('swid'),
   );

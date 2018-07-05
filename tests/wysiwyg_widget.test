@@ -100,6 +100,8 @@ class WysiwygWidgetTest extends DrupalWebTestCase {
       'name' => 'Twitter single tweet',
       'pattern' => 'Twitter single tweet',
       'flags' => 'gi',
+      'external_js' => 'https://platform.twitter.com/widgets.js',
+      'external_js_async' => TRUE,
     );
     $this->drupalPost(NULL, $widget, t('Save'));
 
@@ -110,7 +112,6 @@ class WysiwygWidgetTest extends DrupalWebTestCase {
       <blockquote class="twitter-tweet" data-lang="en">
         <a href="https://twitter.com/FIFAWorldCup/status/1013877667307884544?ref_src=twsrc%5Etfw">July 2, 2018</a>
       </blockquote>
-      <script async="" src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
     </div>';
     */
 
@@ -123,7 +124,7 @@ class WysiwygWidgetTest extends DrupalWebTestCase {
     $this->assertText($node->title);
     $this->assertRaw('<div class="wysiwyg-widget-wrapper"><blockquote class="twitter-tweet"');
     $this->assertRaw('<a href="https://twitter.com/FIFAWorldCup/status/1013877667307884544');
-    $this->assertRaw('<script async src="https://platform.twitter.com/widgets.js"');
+    $this->assertRaw('<script async="async" src="https://platform.twitter.com/widgets.js"');
 
     $this->drupalGet('node/' . $node->nid . '/edit');
   }
