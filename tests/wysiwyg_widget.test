@@ -124,7 +124,7 @@ class WysiwygWidgetTest extends DrupalWebTestCase {
     $this->assertText($node->title);
     $this->assertRaw('<div class="wysiwyg-widget-wrapper"><blockquote class="twitter-tweet"');
     $this->assertRaw('<a href="https://twitter.com/FIFAWorldCup/status/1013877667307884544');
-    $this->assertRaw('src="https://platform.twitter.com/widgets.js"');
+    $this->assertRaw('src="https://platform.twitter.com/widgets.js');
 
     $this->drupalGet('node/' . $node->nid . '/edit');
   }
