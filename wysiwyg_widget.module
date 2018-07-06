@@ -214,8 +214,13 @@ function wysiwyg_widget_preprocess_field(&$variables, $hook) {
 function wysiwyg_widget_get_external_js_placeholders() {
   // Statically cache the external JS placeholders.
   $js_placeholders = &drupal_static(__FUNCTION__);
-
   if (is_array($js_placeholders)) {
+    return $js_placeholders;
+  }
+
+  // Fetch from cache.
+  if ($cache_placeholders = cache_get('wysiwyg_widget_placeholders', 'cache')) {
+    $js_placeholders = $cache_placeholders->data;
     return $js_placeholders;
   }
 
@@ -227,6 +232,9 @@ function wysiwyg_widget_get_external_js_placeholders() {
       $js_placeholders[] = $placeholder;
     }
   }
+
+  // Cache the results.
+  cache_set('wysiwyg_widget_placeholders', $js_placeholders, 'cache');
 
   return $js_placeholders;
 }

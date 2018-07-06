@@ -28,6 +28,7 @@ $plugin = array(
   // Define the names of the functions that provide the add/edit forms.
   'form' => array(
     'settings' => 'wysiwyg_widget_ctools_export_ui_form',
+    'submit' => 'wysiwyg_widget_ctools_export_ui_form_submit',
   ),
 );
 
@@ -60,4 +61,15 @@ function wysiwyg_widget_ctools_export_ui_form(&$form, &$form_state) {
     '#description' => 'Load external JS Asynchronously',
     '#default_value' => $form_state['item']->external_js_async,
   );
+}
+
+/**
+ * Submit callback.
+ *
+ * @param $form
+ * @param $form_state
+ */
+function wysiwyg_widget_ctools_export_ui_form_submit(&$form, &$form_state) {
+  // Clear placeholder cache.
+  cache_clear_all('wysiwyg_widget_placeholders', 'cache', TRUE);
 }
