@@ -98,8 +98,10 @@ class WysiwygWidgetTest extends DrupalWebTestCase {
 
     $widget = array(
       'name' => 'Twitter single tweet',
-      'pattern' => 'Twitter single tweet',
+      'pattern' => 'twitter-tweet',
       'flags' => 'gi',
+      'external_js' => 'https://platform.twitter.com/widgets.js',
+      'external_js_async' => TRUE,
     );
     $this->drupalPost(NULL, $widget, t('Save'));
 
@@ -110,12 +112,11 @@ class WysiwygWidgetTest extends DrupalWebTestCase {
       <blockquote class="twitter-tweet" data-lang="en">
         <a href="https://twitter.com/FIFAWorldCup/status/1013877667307884544?ref_src=twsrc%5Etfw">July 2, 2018</a>
       </blockquote>
-      <script async="" src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
     </div>';
     */
 
     // Inserting the encoded value.
-    $markup = '<!--widget_embed:%3Cdiv%20class%3D%22wysiwyg-widget-wrapper%22%3E%3Cblockquote%20class%3D%22twitter-tweet%22%20data-lang%3D%22en%22%3E%0A%3Ca%20href%3D%22https%3A//twitter.com/FIFAWorldCup/status/1013877667307884544%3Fref_src%3Dtwsrc%255Etfw%22%3EJuly%202%2C%202018%3C/a%3E%0A%3C/blockquote%3E%0A%3Cscript%20async%20src%3D%22https%3A//platform.twitter.com/widgets.js%22%20charset%3D%22utf-8%22%3E%3C/script%3E%0A%3C/div%3E-->';
+    $markup = '<!--widget_embed:%3Cdiv%20class%3D%22wysiwyg-widget-wrapper%22%3E%3Cblockquote%20class%3D%22twitter-tweet%22%20data-lang%3D%22en%22%3E%0A%3Ca%20href%3D%22https%3A//twitter.com/FIFAWorldCup/status/1013877667307884544%3Fref_src%3Dtwsrc%255Etfw%22%3EJuly%202%2C%202018%3C/a%3E%0A%3C/blockquote%3E%0A%0A%3C/div%3E-->';
     $node = $this->createNode($markup);
 
     // Check the node.
@@ -123,7 +124,7 @@ class WysiwygWidgetTest extends DrupalWebTestCase {
     $this->assertText($node->title);
     $this->assertRaw('<div class="wysiwyg-widget-wrapper"><blockquote class="twitter-tweet"');
     $this->assertRaw('<a href="https://twitter.com/FIFAWorldCup/status/1013877667307884544');
-    $this->assertRaw('<script async src="https://platform.twitter.com/widgets.js"');
+    $this->assertRaw('src="https://platform.twitter.com/widgets.js');
 
     $this->drupalGet('node/' . $node->nid . '/edit');
   }

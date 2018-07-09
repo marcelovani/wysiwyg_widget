@@ -179,3 +179,62 @@ function _wysiwyg_widget_generate_image($text) {
 
   return $filename;
 }
+
+/**
+ * Implements template_preprocess_field().
+ *
+ * Adds external JS for widgets embedded in fields on the page.
+ */
+function wysiwyg_widget_preprocess_field(&$variables, $hook) {
+  $element = $variables['element'];
+
+  if (isset($element['#items']) && is_array($element['#items'])) {
+    foreach ($element['#items'] as $item) {
+      if (!empty($item['safe_value']) && !empty($item['format'])) {
+        foreach (wysiwyg_widget_get_external_js_placeholders() as $placeholder) {
+          if (preg_match('/' . preg_quote($placeholder->pattern) . '/', $item['safe_value'])) {
+            // Add Async attribute if enabled.
+            $options = array();
+            if (!empty($placeholder->external_js_async)) {
+              $options = array('async' => 'async');
+            }
+            drupal_add_js($placeholder->external_js, $options);
+          }
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Get placeholders that have external JS.
+ *
+ * @return array
+ */
+function wysiwyg_widget_get_external_js_placeholders() {
+  // Statically cache the external JS placeholders.
+  $js_placeholders = &drupal_static(__FUNCTION__);
+  if (is_array($js_placeholders)) {
+    return $js_placeholders;
+  }
+
+  // Fetch from cache.
+  if ($cache_placeholders = cache_get('wysiwyg_widget_placeholders', 'cache')) {
+    $js_placeholders = $cache_placeholders->data;
+    return $js_placeholders;
+  }
+
+  $js_placeholders = array();
+
+  $placeholders = wysiwyg_widget_get_all_placeholders();
+  foreach ($placeholders as $placeholder) {
+    if (!empty($placeholder->external_js)) {
+      $js_placeholders[] = $placeholder;
+    }
+  }
+
+  // Cache the results.
+  cache_set('wysiwyg_widget_placeholders', $js_placeholders, 'cache');
+
+  return $js_placeholders;
+}
